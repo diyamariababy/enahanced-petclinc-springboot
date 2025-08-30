@@ -27,7 +27,7 @@ pipeline {
                 SCANNER_HOME = tool 'sonarscanner'
             }
             steps {
-                withSonarQubeEnv('Sonarcloud')
+                withSonarQubeEnv('Sonarcloud') {
                     sh '''
                         $SCANNER_HOME/bin/sonarscanner \
                         -Dsonar.organization=diyamariababy \
@@ -38,6 +38,7 @@ pipeline {
                         -Dsonar.java.binaries=.
                     '''
                 }
+            }
         }
     }
 }
