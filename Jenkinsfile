@@ -15,6 +15,12 @@ pipeline {
                  echo "This is Maven Validate Stage"
                 sh 'mvn validate'
             }
-        }   
+        }  
+        stage('Maven Compile') {
+            steps {
+                echo "This is Maven Compile Stage"
+                sh 'mvn compile'
+            }
+        } 
     }
 }
