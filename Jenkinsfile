@@ -24,12 +24,12 @@ pipeline {
         }
         stage('Sonar Analysis'){
             environment {
-                SCANNER_HOME = tool 'sonarscanner'
+                SCANNER_HOME = tool 'SonarScanner'
             }
             steps {
                 withSonarQubeEnv('Sonarcloud') {
                     sh '''
-                        $SCANNER_HOME/bin/sonarscanner \
+                        $SCANNER_HOME/bin/sonar-scanner \
                         -Dsonar.organization=diyamariababy \
                         -Dsonar.projectName=enahanced-petclinc-springboot \
                         -Dsonar.projectKey=diyamariababy_enahanced-petclinc-springboot \
