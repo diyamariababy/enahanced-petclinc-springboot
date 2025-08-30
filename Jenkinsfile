@@ -33,8 +33,6 @@ pipeline {
                         -Dsonar.organization=diyamariababy \
                         -Dsonar.projectName=enahanced-petclinc-springboot \
                         -Dsonar.projectKey=diyamariababy_enahanced-petclinc-springboot \
-                        -Dsonar.host.url=https://sonarcloud.io \
-                        -Dsonar.login=${sonarcloud-token} \
                         -Dsonar.java.binaries=.
                     '''
                 }
