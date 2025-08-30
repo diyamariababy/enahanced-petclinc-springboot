@@ -9,12 +9,12 @@ pipeline {
             steps {
                 git branch: 'prod', url: 'https://github.com/diyamariababy/enahanced-petclinc-springboot.git'
             }
+        }
         stage('Maven Validate') {
              steps {
                  echo "This is Maven Validate Stage"
                 sh 'mvn validate'
-             }
-         }   
-        }
+            }
+        }   
     }
 }
