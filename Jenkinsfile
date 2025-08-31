@@ -6,6 +6,9 @@ pipeline {
     environment {
         IMAGE_NAME ="springbootapp"
         IMAGE_TAG ="latest"
+        ACR_NAME ="jenkinsdiya"
+        TENANT_ID ="416a3bf7-5c28-4a75-960a-8a798110fb88"
+        ACR_LOGIN_SERVER ="jenkinsdiya.azurecr.io"
     }
    
     stages {
@@ -57,6 +60,20 @@ pipeline {
                 
             }
         }
+        stage ('ACR LOGIN'){
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'jenkins-acr-sp', usernameVariable: 'AZURE_USERNAME',passwordVariable: 'AZURE_PASSWORD')]){
+                    script {
+                        echo "Azure login to container registry"
+                        sh '''
+                        az login --service-principal -u $AZURE_USERNAME -p $AZURE_PASSWORD --tenant $TENANT_ID
+                        az acr login --name $ACR_NAME
+                        '''
+                    }
+                }
+            }
+        }
     }
+
 }
 
