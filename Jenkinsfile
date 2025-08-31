@@ -3,6 +3,10 @@ pipeline {
     tools {
         maven 'maven'
     }
+    environment {
+        IMAGE_NAME ="springbootapp"
+        IMAGE_TAG ="latest"
+    }
    
     stages {
         stage('Checkout From Git') {
@@ -42,6 +46,15 @@ pipeline {
             steps {
                 echo "This is maven package"
                 sh 'mvn package'
+            }
+        }
+        stage("Docker Build"){
+            steps {
+                script {
+                    echo "Docker Build Started"
+                    docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                }
+                
             }
         }
     }
