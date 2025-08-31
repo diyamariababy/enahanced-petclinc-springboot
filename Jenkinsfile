@@ -8,8 +8,8 @@ pipeline {
         IMAGE_TAG ="latest"
         ACR_NAME ="jenkinsdiya"
         TENANT_ID ="416a3bf7-5c28-4a75-960a-8a798110fb88"
-        ACR_LOGIN_SERVER ="jenkinsdiya.azurecr.io"
-        FULL_IMAGE_NAME ="${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${IMAGE:TAG}"
+        ACR_LOGIN_SERVER ="${ACR_NAME}.azurecr.io"
+        FULL_IMAGE_NAME ="${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${IMAGE_TAG}"
     }
    
     stages {
