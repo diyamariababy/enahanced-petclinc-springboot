@@ -44,7 +44,7 @@ pipeline {
         stage('maven package'){
             steps {
                 echo "This is maven package"
-                sh 'mvn compile'
+                sh 'mvn package'
             }
         }
         stage('Docker build'){
