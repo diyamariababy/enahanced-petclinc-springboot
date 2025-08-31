@@ -9,6 +9,7 @@ pipeline {
         ACR_NAME ="jenkinsdiya"
         TENANT_ID ="416a3bf7-5c28-4a75-960a-8a798110fb88"
         ACR_LOGIN_SERVER ="jenkinsdiya.azurecr.io"
+        FULL_IMAGE_NAME ="${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${IMAGE:TAG}"
     }
    
     stages {
@@ -70,6 +71,17 @@ pipeline {
                         az acr login --name $ACR_NAME
                         '''
                     }
+                }
+            }
+        }
+        stage ('Docker Push to ACR'){
+            steps {
+                script {
+                    echo "Docker Push Image to Registry"
+                    sh '''
+                    docker tag ${IMAGE_NAME}:${IMAGE_TAG} ${FULL_IMAGE_NAME}
+                    docker push ${FULL_IMAGE_NAME}
+                    '''
                 }
             }
         }
