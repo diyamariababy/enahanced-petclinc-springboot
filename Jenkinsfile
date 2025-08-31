@@ -10,6 +10,8 @@ pipeline {
         TENANT_ID ="416a3bf7-5c28-4a75-960a-8a798110fb88"
         ACR_LOGIN_SERVER ="${ACR_NAME}.azurecr.io"
         FULL_IMAGE_NAME ="${ACR_LOGIN_SERVER}/${IMAGE_NAME}:${IMAGE_TAG}"
+        RESOURCE_GROUP ="jenkins-rg"
+        CLUSTER_NAME ="jenkins-aks"
     }
    
     stages {
@@ -83,6 +85,19 @@ pipeline {
                     docker push ${FULL_IMAGE_NAME}
                     '''
                 }
+            }
+        }
+        stage('Azure Login to AKS Cluster') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'jenkins-acr-sp', usernameVariable: 'AZURE_USERNAME',passwordVariable: 'AZURE_PASSWORD')]){
+                script {
+                    echo "Azure Loginto AKS"
+                    sh '''
+                    az login --service-principal -u $AZURE_USERNAME -p $AZURE_PASSWORD --tenant $TENANT_ID
+                    az aks get-credentials --resource-group $RESOURCE_GROUP --name $CLUSTER_NAME
+                    '''
+                    }    
+                 }
             }
         }
     }
