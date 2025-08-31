@@ -14,73 +14,53 @@
  * limitations under the License.
  */
 package org.springframework.samples.petclinic.web;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.samples.petclinic.model.PetType;
-import org.springframework.samples.petclinic.service.ClinicService;
+
+
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-/**
- * Test class for {@link PetTypeFormatter}
- *
- * @author Colin But
- */
-@ExtendWith(MockitoExtension.class)
-class PetTypeFormatterTests {
-    @Mock
-    private ClinicService clinicService;
-    private PetTypeFormatter petTypeFormatter;
-    @BeforeEach
-    void setup() {
-        petTypeFormatter = new PetTypeFormatter(clinicService);
-    }
-    @Test
-    void testPrint() {
-        PetType petType = new PetType();
-        petType.setName("Hamster");
-        String petTypeName = petTypeFormatter.print(petType, Locale.ENGLISH);
-        assertEquals("Hamster", petTypeName);
-    }
-    @Test
-    void shouldParse() throws ParseException {
-        Mockito.when(clinicService.findPetTypes()).thenReturn(makePetTypes());
-        PetType petType = petTypeFormatter.parse("Bird", Locale.ENGLISH);
-        assertEquals("Bird", petType.getName());
-    }
-    @Test
-    void shouldThrowParseException() throws ParseException {
-        Mockito.when(clinicService.findPetTypes()).thenReturn(makePetTypes());
-        Assertions.assertThrows(ParseException.class, () -> {
-Remove useless curly braces around statement (sonar.java.source not set. Assuming 8 or greater.)
 
-            petTypeFormatter.parse("Fish", Locale.ENGLISH);
-        });
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.Formatter;
+import org.springframework.samples.petclinic.model.PetType;
+import org.springframework.samples.petclinic.service.ClinicService;
+
+/**
+ * Instructs Spring MVC on how to parse and print elements of type 'PetType'. Starting from Spring 3.0, Formatters have
+ * come as an improvement in comparison to legacy PropertyEditors. See the following links for more details: - The
+ * Spring ref doc: http://static.springsource.org/spring/docs/current/spring-framework-reference/html/validation.html#format-Formatter-SPI
+ * - A nice blog entry from Gordon Dickens: http://gordondickens.com/wordpress/2010/09/30/using-spring-3-0-custom-type-converter/
+ * <p/>
+ * Also see how the bean 'conversionService' has been declared inside /WEB-INF/mvc-core-config.xml
+ *
+ * @author Mark Fisher
+ * @author Juergen Hoeller
+ * @author Michael Isvy
+ */
+public class PetTypeFormatter implements Formatter<PetType> {
+
+    private final ClinicService clinicService;
+
+
+    @Autowired
+    public PetTypeFormatter(ClinicService clinicService) {
+        this.clinicService = clinicService;
     }
-    /**
-     * Helper method to produce some sample pet types just for test purpose
-     *
-     * @return {@link Collection} of {@link PetType}
-     */
-    private Collection<PetType> makePetTypes() {
-        Collection<PetType> petTypes = new ArrayList<>();
-        petTypes.add(new PetType(){
-            {
-                setName("Dog");
-            }
-        });
-        petTypes.add(new PetType(){
-            {
-                setName("Bird");
-            }
-        });
-        return petTypes;
+
+    @Override
+    public String print(PetType petType, Locale locale) {
+        return petType.getName();
     }
+
+    @Override
+    public PetType parse(String text, Locale locale) throws ParseException {
+        Collection<PetType> findPetTypes = this.clinicService.findPetTypes();
+        for (PetType type : findPetTypes) {
+            if (type.getName().equals(text)) {
+                return type;
+            }
+        }
+        throw new ParseException("type not found: " + text, 0);
+    }
+
 }
